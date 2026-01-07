@@ -24,7 +24,7 @@ class User:
             return True
 
         except Exception as e:
-            print(f"exception: {e}")
+            print(f"exception-on-create: {e}")
             return False
 
     def delete(self) -> bool:
@@ -37,5 +37,5 @@ class User:
             return True
 
         except Exception as e:
-            print(f"exception: {e}")
+            print(f"exception-on-delete: {e}")
             return False
