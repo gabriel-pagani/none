@@ -4,7 +4,7 @@ from utils.crypto import generate_hash
 
 
 class User:
-    def __init__(self, id: int, salt: bytes, username: str, master_password_hash: str):
+    def __init__(self, id: int = None, salt: bytes = None, username: str = None, master_password_hash: str = None):
         self.id = id
         self.salt = salt
         self.username = username
