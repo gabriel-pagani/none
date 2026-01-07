@@ -4,32 +4,30 @@ from utils.crypto import generate_hash
 
 
 class User:
-    def __init__(self, username: str, master_password: str, salt: bytes = None) -> None:
+    def __init__(self, id: int, salt: bytes, username: str, master_password_hash: str):
+        self.id = id
+        self.salt = salt
         self.username = username
-        self.master_password_hash = generate_hash(master_password)
-        self.salt = salt or urandom(32)
+        self.master_password_hash = master_password_hash
 
-    def create_user(self) -> bool:
+    @classmethod
+    def create(cls, username: str, master_password: str) -> bool:
+        salt = urandom(32)
+        master_password_hash = generate_hash(master_password)
+
         try:
-            response = execute_query(
-                query="SELECT * FROM users WHERE username = ?",
-                params=(self.username,)
-            )
-
-            if response != []:
-                return False
-
             execute_query(
                 query="INSERT INTO users (username, master_password_hash, salt) VALUES (?, ?, ?)",
-                params=(self.username, self.master_password_hash, self.salt)
+                params=(username, master_password_hash, salt)
             )
 
             return True
 
         except Exception as e:
+            print(f"exception: {e}")
             return False
 
-    def delete_user(self) -> bool:
+    def delete(self) -> bool:
         try:
             execute_query(
                 query="DELETE FROM users WHERE username = ?",
@@ -39,4 +37,5 @@ class User:
             return True
 
         except Exception as e:
+            print(f"exception: {e}")
             return False
