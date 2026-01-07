@@ -10,12 +10,12 @@ def get_connection():
     return conn
 
 
-def execute_query(query: str, param = None):
+def execute_query(query: str, params = None):
     with get_connection() as conn:
         cursor = conn.cursor()
 
-        if param is not None:
-            cursor.execute(query, param)
+        if params is not None:
+            cursor.execute(query, params)
         else:
             cursor.execute(query)
 
