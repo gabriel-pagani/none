@@ -5,12 +5,82 @@ def create_tables():
     with get_connection() as conn:
         cursor = conn.cursor()
 
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS USERS (
-            ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            NAME TEXT NOT NULL,
-            AGE INTEGER
+        cursor.executescript("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL UNIQUE,
+            master_password_hash TEXT NOT NULL
+        );
+                       
+        CREATE TABLE IF NOT EXISTS password_types (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE
+        );
+                       
+        CREATE TABLE IF NOT EXISTS passwords (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            type_id INTEGER,
+            service TEXT NOT NULL,
+            login TEXT,
+            password_encrypted BLOB NOT NULL,
+            url TEXT,
+            notes TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME,
+
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT,
+            FOREIGN KEY (type_id) REFERENCES password_types(id) ON DELETE RESTRICT
+        );
+                       
+        CREATE TABLE IF NOT EXISTS password_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            password_id INTEGER NOT NULL,
+            password_encrypted BLOB NOT NULL,
+            changed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+            FOREIGN KEY (password_id) REFERENCES passwords(id) ON DELETE CASCADE
+        );
+                             
+        CREATE INDEX IF NOT EXISTS idx_passwords_user ON passwords(user_id);
+        CREATE INDEX IF NOT EXISTS idx_passwords_type ON passwords(type_id);
+        CREATE INDEX IF NOT EXISTS idx_password_history_password ON password_history(password_id);
+                             
+        CREATE TRIGGER IF NOT EXISTS trg_passwords_updated
+        AFTER UPDATE ON passwords
+        BEGIN
+            UPDATE passwords
+            SET updated_at = CURRENT_TIMESTAMP
+            WHERE id = NEW.id;
+        END;
+                             
+        CREATE TRIGGER IF NOT EXISTS trg_passwords_history
+        BEFORE UPDATE OF password_encrypted ON passwords
+        FOR EACH ROW
+        BEGIN
+            INSERT INTO password_history (
+                password_id,
+                password_encrypted,
+                changed_at
+            )
+            VALUES (
+                OLD.id,
+                OLD.password_encrypted,
+                CURRENT_TIMESTAMP
+            );
+        END;
+
+        CREATE TRIGGER trg_block_password_history_delete
+        BEFORE DELETE ON password_history
+        WHEN EXISTS (
+            SELECT 1
+            FROM passwords
+            WHERE passwords.id = OLD.password_id
         )
+        BEGIN
+            SELECT
+                RAISE(ABORT, 'Direct delete from password_history is not allowed');
+        END;
         """)
 
 
