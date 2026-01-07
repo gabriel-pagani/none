@@ -23,7 +23,19 @@ class User:
                 query="INSERT INTO users (username, master_password_hash, salt) VALUES (?, ?, ?)",
                 params=(self.username, self.master_password_hash, self.salt)
             )
-            
+
+            return True
+
+        except Exception as e:
+            return False
+
+    def delete_user(self) -> bool:
+        try:
+            execute_query(
+                query="DELETE FROM users WHERE username = ?",
+                params=(self.username,)
+            )
+
             return True
 
         except Exception as e:
