@@ -44,12 +44,18 @@ class User:
             print(f"exception-on-read: {e}")
             return None
 
-    def delete(self) -> None:
+    def delete(self) -> bool:
         try:
+            if not self.id:
+                return False
+            
             execute_query(
                 query="DELETE FROM users WHERE id = ?",
                 params=(self.id,)
             )
 
+            return True
+
         except Exception as e:
             print(f"exception-on-delete: {e}")
+            return False
