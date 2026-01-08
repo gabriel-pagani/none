@@ -43,6 +43,12 @@ def derive_master_password(master_password: str, salt: bytes) -> bytes:
     )
 
 
+def generate_password() -> str:
+    characters = r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&-_=~^,.<>;:()[]{}"
+    password = ''.join(secrets.choice(characters) for _ in range(50))
+    return password
+
+
 def encrypt_password(derived_master_password: bytes, password: str, associated_data: bytes) -> tuple[bytes, bytes]:
     aesgcm = AESGCM(derived_master_password)
     iv = os.urandom(12)
@@ -57,8 +63,3 @@ def decrypt_password(derived_master_password: bytes, iv: bytes, encrypted_passwo
         return decrypted_password
     except InvalidTag:
         raise ValueError("Invalid key or Corrupted data.")
-
-def generate_password() -> str:
-    characters = r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&-_=~^,.<>;:()[]{}"
-    password = ''.join(secrets.choice(characters) for _ in range(50))
-    return password
