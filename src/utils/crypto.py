@@ -55,4 +55,5 @@ def decrypt_password(master_password: str, salt: bytes, iv: bytes, password_encr
         password_decrypted = aesgcm.decrypt(iv, password_encrypted, None).decode()
         return password_decrypted
     except Exception as e:
+        print(f"exception-on-crypto: {e}")
         return ""
