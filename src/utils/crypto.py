@@ -1,10 +1,13 @@
+from dotenv import load_dotenv
 import os
 from argon2 import PasswordHasher
 
+load_dotenv()
+
 PEPPER = os.getenv("PEPPER", "")
 
-# if PEPPER is "":
-#     raise RuntimeError("CRITICAL ERROR: The environment variable 'PEPPER' is not defined.")
+if PEPPER == "":
+    raise RuntimeError("CRITICAL ERROR: The environment variable 'PEPPER' is not defined.")
 
 password_hasher = PasswordHasher(
     time_cost=3,
