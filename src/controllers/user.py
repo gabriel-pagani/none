@@ -11,7 +11,7 @@ class User:
         self.master_password_hash = master_password_hash
 
     @classmethod
-    def create(cls, username: str, master_password: str) -> bool:
+    def create(cls, username: str, master_password: str) -> None:
         salt = urandom(32)
         master_password_hash = generate_hash(master_password)
 
@@ -21,11 +21,8 @@ class User:
                 params=(username, master_password_hash, salt)
             )
 
-            return True
-
         except Exception as e:
             print(f"exception-on-create: {e}")
-            return False
 
     def delete(self) -> bool:
         try:
