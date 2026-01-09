@@ -49,6 +49,24 @@ class PasswordType:
             print(f"exception-on-get: {e}")
             return None
 
+    def update(self, name: str) -> bool:
+        try:
+            if not self.id:
+                return False
+
+            execute_query(
+                f"UPDATE password_types SET name = ? WHERE id = ?", 
+                (name, self.id)
+            )
+            
+            self.name = name if name else self.name
+
+            return True
+
+        except Exception as e:
+            print(f"exception-on-update: {e}")
+            return False
+
     def delete(self) -> bool:
         try:
             if not self.id:
