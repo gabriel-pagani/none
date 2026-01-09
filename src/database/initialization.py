@@ -25,7 +25,7 @@ def create_tables():
             service TEXT NOT NULL,
             login TEXT,
             iv BLOB NOT NULL,
-            password_encrypted BLOB NOT NULL,
+            encrypted_password BLOB NOT NULL,
             url TEXT,
             notes TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -44,7 +44,7 @@ def create_tables():
             service TEXT NOT NULL,
             login TEXT,
             iv BLOB NOT NULL,
-            password_encrypted BLOB NOT NULL,
+            encrypted_password BLOB NOT NULL,
             url TEXT,
             notes TEXT,
             changed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -69,7 +69,7 @@ def create_tables():
         END;
 
         CREATE TRIGGER IF NOT EXISTS trg_passwords_history
-        BEFORE UPDATE OF password_encrypted ON passwords
+        BEFORE UPDATE OF encrypted_password ON passwords
         FOR EACH ROW
         BEGIN
             INSERT INTO password_history (
@@ -79,7 +79,7 @@ def create_tables():
                 service,
                 login,
                 iv,
-                password_encrypted,
+                encrypted_password,
                 url,
                 notes,
                 changed_at
@@ -91,7 +91,7 @@ def create_tables():
                 OLD.service,
                 OLD.login,
                 OLD.iv,
-                OLD.password_encrypted,
+                OLD.encrypted_password,
                 OLD.url,
                 OLD.notes,
                 CURRENT_TIMESTAMP
@@ -109,7 +109,7 @@ def create_tables():
                 service,
                 login,
                 iv,
-                password_encrypted,
+                encrypted_password,
                 url,
                 notes,
                 changed_at
@@ -121,7 +121,7 @@ def create_tables():
                 OLD.service,
                 OLD.login,
                 OLD.iv,
-                OLD.password_encrypted,
+                OLD.encrypted_password,
                 OLD.url,
                 OLD.notes,
                 CURRENT_TIMESTAMP
