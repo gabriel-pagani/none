@@ -100,6 +100,72 @@ class Password:
             print(f"exception-on-get: {e}")
             return None
 
+    def update(
+        self,
+        type_id: Optional[int] = None,
+        service: Optional[str] = None,
+        login: Optional[str] = None,
+        iv: Optional[bytes] = None,
+        encrypted_password: Optional[bytes] = None,
+        url: Optional[str] = None,
+        notes: Optional[str] = None,
+        deleted_at: Optional[datetime] = None,
+    ) -> bool:
+        try:
+            if not self.id:
+                return False
+
+            fields = list()
+            values = list()
+            if type_id:
+                fields.append("type_id = ?")
+                values.append(type_id)
+            if service:
+                fields.append("service = ?")
+                values.append(service)
+            if login:
+                fields.append("login = ?")
+                values.append(login)
+            if iv:
+                fields.append("iv = ?")
+                values.append(iv)
+            if encrypted_password:
+                fields.append("encrypted_password = ?")
+                values.append(encrypted_password)
+            if url:
+                fields.append("url = ?")
+                values.append(url)
+            if notes:
+                fields.append("notes = ?")
+                values.append(notes)
+            if deleted_at:
+                fields.append("deleted_at = ?")
+                values.append(deleted_at)
+            
+            if not fields:
+                return False
+
+            values.append(self.id)
+            execute_query(
+                f"UPDATE passwords SET {', '.join(fields)} WHERE id = ?", 
+                tuple(values)
+            )
+            
+            self.type_id = type_id if type_id else self.type_id
+            self.service = service if service else self.service
+            self.login = login if login else self.login
+            self.iv = iv if iv else self.iv
+            self.encrypted_password = encrypted_password if encrypted_password else self.encrypted_password
+            self.url = url if url else self.url
+            self.notes = notes if notes else self.notes
+            self.deleted_at = deleted_at if deleted_at else self.deleted_at
+
+            return True
+
+        except Exception as e:
+            print(f"exception-on-update: {e}")
+            return False
+
     def delete(self) -> bool:
         try:
             if not self.id:
