@@ -12,6 +12,25 @@ class PasswordType:
         self.name = name
 
     @classmethod
+    def create(cls, name: str) -> Optional['PasswordType']:
+        try:
+            response = execute_query(
+                "INSERT INTO password_types (name) VALUES (?) RETURNING *",
+                (name,)
+            )
+
+            if response != []:
+                return cls(
+                    id=response[0][0],
+                    name=response[0][1],
+                )
+            return None
+            
+        except Exception as e:
+            print(f"exception-on-create: {e}")
+            return None
+
+    @classmethod
     def get(cls, id: int) -> Optional['PasswordType']:
         try:
             response = execute_query(
@@ -29,3 +48,19 @@ class PasswordType:
         except Exception as e:
             print(f"exception-on-get: {e}")
             return None
+
+    def delete(self) -> bool:
+        try:
+            if not self.id:
+                return False
+            
+            execute_query(
+                "DELETE FROM password_types WHERE id = ?",
+                (self.id,)
+            )
+            
+            return True
+
+        except Exception as e:
+            print(f"exception-on-delete: {e}")
+            return False
