@@ -1,7 +1,7 @@
 from os import urandom
-from typing import Optional
+from typing import Optional, Tuple
 from database.connection import execute_query
-from utils.cryptor import generate_hash
+from utils.cryptor import generate_hash, verify_hash, derive_master_password
 
 
 class User:
@@ -77,3 +77,31 @@ class User:
         except Exception as e:
             print(f"exception-on-delete: {e}")
             return False
+
+    @classmethod
+    def login(cls, username: str, master_password: str) -> Tuple[Optional['User'], Optional[bytes]]:
+        try:
+            response = execute_query(
+                "SELECT * FROM users WHERE username = ?",
+                (username,)
+            )
+
+            if not response:
+                return None, None
+
+            user = cls(
+                id=response[0][0], 
+                salt=response[0][1], 
+                username=response[0][2], 
+                master_password_hash=response[0][3]
+            )
+
+            if verify_hash(user.master_password_hash, master_password):
+                derived_key = derive_master_password(master_password, user.salt)
+                return user, derived_key
+            
+            return None, None
+
+        except Exception as e:
+            print(f"exception-on-login: {e}")
+            return None, None
