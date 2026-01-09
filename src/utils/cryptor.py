@@ -8,7 +8,7 @@ load_dotenv()
 
 PEPPER = os.getenv("PEPPER", "")
 
-if PEPPER == "":
+if PEPPER:
     raise RuntimeError("PEPPER is missing.")
 
 password_hasher = PasswordHasher(
