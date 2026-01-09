@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from database.connection import execute_query
 
 
@@ -48,6 +48,26 @@ class PasswordType:
         except Exception as e:
             print(f"exception-on-get: {e}")
             return None
+
+    @classmethod
+    def get_all(cls) -> List['PasswordType']:
+        try:
+            response = execute_query("SELECT * FROM password_types")
+            
+            types = []
+            if response:
+                for row in response:
+                    types.append(
+                        cls(
+                            id=row[0], 
+                            name=row[1]
+                        )
+                    )
+            return types
+
+        except Exception as e:
+            print(f"exception-on-get-all: {e}")
+            return []
 
     def update(self, name: str) -> bool:
         try:
