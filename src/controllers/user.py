@@ -39,6 +39,7 @@ class User:
             raise Exception
             
         except IntegrityError as e:
+            print(f"integrity-error: {e}")
             return None, 2, f"User already exists."
         except Exception as e:
             print(f"exception-on-create: {e}")
@@ -151,9 +152,6 @@ class User:
 
     def delete(self) -> bool:
         try:
-            if not self.id:
-                return False
-            
             execute_query(
                 "DELETE FROM users WHERE id = ?",
                 (self.id,)
@@ -161,6 +159,9 @@ class User:
             
             return True
 
+        except IntegrityError as e:
+            print(f"integrity-error: {e}")
+            return False
         except Exception as e:
             print(f"exception-on-delete: {e}")
             return False
