@@ -1,5 +1,6 @@
 from os import urandom
 from typing import Optional, Tuple
+from sqlite3 import IntegrityError
 from database.connection import execute_query, get_connection
 from utils.cryptor import generate_hash, verify_hash, derive_master_password, encrypt_password, decrypt_password
 
@@ -18,7 +19,7 @@ class User:
         self.master_password_hash = master_password_hash
 
     @classmethod
-    def create(cls, username: str, master_password: str) -> Optional['User']:
+    def create(cls, username: str, master_password: str) -> Tuple[Optional['User'], Optional[int], Optional[str]]:
         try:
             salt = urandom(32)
             master_password_hash = generate_hash(master_password)
@@ -34,12 +35,14 @@ class User:
                     salt=response[0][1],
                     username=response[0][2],
                     master_password_hash=response[0][3]
-                )
-            return None
+                ), 1, "User created successfully."
+            raise Exception
             
+        except IntegrityError as e:
+            return None, 2, f"User already exists."
         except Exception as e:
             print(f"exception-on-create: {e}")
-            return None
+            return None, 3, f"An unexpected error occurred. Please try creating your account again later."
 
     @classmethod
     def get(cls, id: int) -> Optional['User']:
