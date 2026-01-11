@@ -1,5 +1,6 @@
 import flet as ft
 from controllers.user import User
+from utils.validator import validate_master_password
 
 
 class Login:
@@ -8,6 +9,7 @@ class Login:
         self.user = None
         self.user_key = None
         self.setup_page()
+        self.show_login_view()
 
     def setup_page(self):
         self.page.title = 'Kryptex'
@@ -39,3 +41,234 @@ class Login:
         self.page.overlay.append(snack_bar)
         snack_bar.open = True
         self.page.update()
+
+    def show_master_password_confirmation(self, e, master_password_confirmed_input):
+        if e.control.value:
+            master_password_confirmed_input.visible = True
+        else:
+            master_password_confirmed_input.visible = False
+        self.page.update()
+
+    def show_login_view(self) -> None:
+        def login(e):
+            username = username_input.value
+            master_password = master_password_input.value
+
+            if not username:
+                self.show_message(2, 'The username field is required!')
+            elif not master_password:
+                self.show_message(2, 'The master password field is required!')
+            else:
+                user, user_key, msg_type, msg = User.login(username, master_password)
+                if user:
+                    self.user = user
+                    self.user_key = user_key
+                    self.page.clean()
+                    self.show_message(msg_type, msg)
+
+                else:
+                    self.show_message(msg_type, msg)
+
+        def register(e):
+            self.page.clean()
+            self.show_register_view()
+
+        # Components
+        title = ft.Text(
+            "Kryptex!", 
+            size=70,
+            weight=ft.FontWeight.BOLD, 
+            color=ft.Colors.BLUE_900
+        )
+
+        username_input = ft.TextField(
+            label="Username",
+            prefix_icon=ft.Icons.PERSON,
+            hint_text="Enter your username here...",
+            width=400,
+            border_color=ft.Colors.BLUE_400,
+            cursor_color=ft.Colors.BLUE_900,
+            on_submit=login,
+        )
+
+        master_password_input = ft.TextField(
+            label="Master password",
+            prefix_icon=ft.Icons.LOCK,
+            hint_text="Enter your master password here...",
+            password=True,
+            width=400,
+            border_color=ft.Colors.BLUE_400,
+            cursor_color=ft.Colors.BLUE_900,
+            on_submit=login,
+        )
+
+        login_button = ft.Button(
+            content="Login",
+            width=400,
+            height=50,
+            bgcolor=ft.Colors.BLUE_900,
+            color=ft.Colors.WHITE,
+            on_click=login,
+            style=ft.ButtonStyle(
+                shape=ft.RoundedRectangleBorder(radius=8)
+            )
+        )
+
+        register_button = ft.Button(
+            content="Create account",
+            width=400,
+            height=50,
+            bgcolor=ft.Colors.WHITE,
+            color=ft.Colors.BLUE_900,
+            on_click=register,
+            style=ft.ButtonStyle(
+                shape=ft.RoundedRectangleBorder(radius=8)
+            )
+        )
+
+        # Layout
+        content = ft.Column(
+            controls=[
+                title,
+                ft.Divider(height=30, color=ft.Colors.TRANSPARENT),
+                username_input,
+                master_password_input,
+                ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
+                login_button,
+                register_button
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            spacing=15
+        )
+
+        container = ft.Container(
+            content=content,
+            expand=True,
+            alignment=ft.Alignment.CENTER
+        )
+
+        self.page.add(container)
+
+    def show_register_view(self) -> None:
+        def register(e):
+            username = username_input.value
+            master_password = master_password_input.value
+            master_password_confirmed = master_password_confirmed_input.value
+
+            if not username:
+                self.show_message(2, 'The username field is required!')
+            elif not master_password:
+                self.show_message(2, 'The master password field is required!')
+            elif not master_password_confirmed:
+                self.show_message(2, 'The master password confirmation field is required!')
+            elif master_password != master_password_confirmed:
+                self.show_message(2, "The passwords don't match!")
+            elif not validate_master_password(master_password):
+                self.show_message(2, "Weak password! The password must contain at least 12 characters or more, \none uppercase letter, one lowercase letter, one number, and one special character.")
+            else:
+                new_user, msg_type, msg = User.create(username, master_password)
+
+                if new_user:
+                    self.show_message(msg_type, msg)
+                    self.page.clean()
+                    self.show_login_view()
+                
+                else:
+                    self.show_message(msg_type, msg)
+
+        def login(e):
+            self.page.clean()
+            self.show_login_view()
+
+        # Components
+        title = ft.Text(
+            "Create Account", 
+            size=70, 
+            weight=ft.FontWeight.BOLD, 
+            color=ft.Colors.BLUE_900
+        )
+
+        username_input = ft.TextField(
+            label="Username",
+            prefix_icon=ft.Icons.PERSON,
+            hint_text="Enter your username here...",
+            width=400,
+            border_color=ft.Colors.BLUE_400,
+            cursor_color=ft.Colors.BLUE_900,
+            on_submit=register,
+        )
+
+        master_password_input = ft.TextField(
+            label="Master password",
+            prefix_icon=ft.Icons.LOCK,
+            hint_text="Enter your master password here...",
+            password=True,
+            width=400,
+            border_color=ft.Colors.BLUE_400,
+            cursor_color=ft.Colors.BLUE_900,
+            on_change=lambda e: self.show_master_password_confirmation(e, master_password_confirmed_input),
+            on_submit=register,
+        )
+
+        master_password_confirmed_input = ft.TextField(
+            label="Confirm master password",
+            prefix_icon=ft.Icons.LOCK,
+            hint_text="Confirm your master password here...",
+            password=True,
+            can_reveal_password=True,
+            width=400,
+            border_color=ft.Colors.BLUE_400,
+            cursor_color=ft.Colors.BLUE_900,
+            visible=False,
+            on_submit=register,
+        )
+
+        register_button = ft.Button(
+            content="Create account",
+            width=400,
+            height=50,
+            bgcolor=ft.Colors.BLUE_900,
+            color=ft.Colors.WHITE,
+            on_click=register,
+            style=ft.ButtonStyle(
+                shape=ft.RoundedRectangleBorder(radius=8)
+            )
+        )
+
+        login_button = ft.Button(
+            content="I already have an account",
+            width=400,
+            height=50,
+            bgcolor=ft.Colors.WHITE,
+            color=ft.Colors.BLUE_900,
+            on_click=login,
+            style=ft.ButtonStyle(
+                shape=ft.RoundedRectangleBorder(radius=8)
+            )
+        )
+
+        # Layout
+        content = ft.Column(
+            controls=[
+                title,
+                ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
+                username_input,
+                master_password_input,
+                master_password_confirmed_input,
+                ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
+                register_button,
+                login_button
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            spacing=15
+        )
+
+        container = ft.Container(
+            content=content,
+            expand=True,
+            alignment=ft.Alignment.CENTER
+        )
+
+        self.page.add(container)
