@@ -65,7 +65,7 @@ class User:
 
             if verify_hash(user.master_password_hash, master_password):
                 user_key = derive_master_password(master_password, user.salt)
-                return user, user_key, 1, "Login successful."
+                return user, user_key, 1, "Login successful!"
             else:
                 return None, None, 2, "Invalid username and/or master password!"
 
