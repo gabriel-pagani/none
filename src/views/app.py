@@ -165,7 +165,7 @@ class App:
             elif master_password != master_password_confirmed:
                 self.show_message(2, "The passwords don't match!")
             elif not validate_master_password(master_password):
-                self.show_message(2, "Weak password! The password must contain at least 12 characters or more, \none uppercase letter, one lowercase letter, one number, and one special character.")
+                self.show_message(2, "Weak password! The password must contain at least 15 characters or more.")
             else:
                 new_user, msg_type, msg = User.create(username, master_password)
 
