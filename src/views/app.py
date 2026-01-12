@@ -279,4 +279,10 @@ class App:
             await ft.Clipboard().set('Test')
             self.show_message(1, "Text copied to clipboard!")
         
+        def logout(e):
+            self.user = None
+            self.user_key = None
+            self.page.clean()
+            self.show_login_view()
+
         ...
