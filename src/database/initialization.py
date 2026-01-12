@@ -1,11 +1,8 @@
-from connection import get_connection
+import sqlite3
 
 
-def create_tables():
-    with get_connection() as conn:
-        cursor = conn.cursor()
-
-        cursor.executescript("""
+def create_tables(conn: sqlite3.Connection):
+    conn.executescript("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             salt BLOB NOT NULL,
@@ -127,8 +124,4 @@ def create_tables():
                 CURRENT_TIMESTAMP
             );
         END;
-        """)
-
-
-if __name__ == "__main__":
-    create_tables()
+    """)
