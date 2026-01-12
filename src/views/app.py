@@ -292,7 +292,7 @@ class App:
                     content=ft.Row(
                         [
                             ft.Icon(ft.Icons.PERSON, ft.Colors.BLACK),
-                            ft.Text("My Account"),
+                            ft.Text("My account"),
                         ]
                     ),
                     on_click=...,
