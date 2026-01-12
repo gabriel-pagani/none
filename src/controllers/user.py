@@ -143,6 +143,10 @@ class User:
             conn.commit()
             return True
 
+        except IntegrityError as e:
+            print(f"integrity-error: {e}")
+            conn.rollback()
+            return False
         except Exception as e:
             print(f"exception-on-update: {e}")
             conn.rollback() # Desfaz todas as alterações se algo der errado
