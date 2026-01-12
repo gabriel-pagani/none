@@ -13,7 +13,7 @@ class App:
 
     def setup_page(self):
         self.page.title = 'Kryptex'
-        self.page.window.icon = r''
+        self.page.window.icon = r'favicon.png'
         self.page.theme_mode = ft.ThemeMode.LIGHT
         self.page.bgcolor = ft.Colors.WHITE
         self.page.padding = 0
