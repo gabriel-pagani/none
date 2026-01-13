@@ -409,7 +409,7 @@ class App:
             password_input.value = ""
             url_input.value = ""
             notes_input.value = ""
-            type_dropdown.value = None
+            type_dropdown.value = ""
             
             self.page.pop_dialog()
 
@@ -457,7 +457,7 @@ class App:
                 password_input.value = ""
                 url_input.value = ""
                 notes_input.value = ""
-                type_dropdown.value = None
+                type_dropdown.value = ""
                 
                 close_new_password_dialog(e)
                 self.show_message(1, "Password saved successfully!")
