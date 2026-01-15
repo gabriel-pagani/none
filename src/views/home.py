@@ -89,13 +89,62 @@ class HomeView:
 
         # Dialogs
         def close_dialog(e):
-            ...       
+            service_input.error = None
+            password_input.error = None
+            
+            service_input.value = ""
+            login_input.value = ""
+            password_input.value = ""
+            url_input.value = ""
+            notes_input.value = ""
+            type_dropdown.value = ""
+            
+            self.page.pop_dialog()       
         
         def open_new_password_dialog(e):
-            ...
+            self.page.show_dialog(new_password_dialog)
 
         def save_new_password(e):
-            ...        
+            service_input.error = None
+            password_input.error = None
+            
+            has_error = False
+
+            if not service_input.value:
+                service_input.error = 'The service field is required!'
+                has_error = True
+
+            if not password_input.value:
+                password_input.error = 'The password field is required!'
+                has_error = True
+            
+            if has_error:
+                service_input.update()
+                password_input.update()
+                return
+
+            payload = {
+                "service": service_input.value,
+                "login": login_input.value,
+                "password": password_input.value,
+                "type_id": int(type_dropdown.value) if type_dropdown.value else None,
+                "url": url_input.value,
+                "notes": notes_input.value,
+            }
+            
+            new_password = Password.create(
+                user_id=self.user.id,
+                user_key=self.user_key,
+                data=payload,
+                type_id=int(type_dropdown.value) if type_dropdown.value else None,
+            )
+
+            if new_password:
+                close_dialog(e)
+                show_message(self.page, 1, "Password saved successfully!")
+            else:
+                close_dialog(e)
+                show_message(self.page, 3, "Error saving password! Please try again later.")   
         
         new_password_dialog = ft.AlertDialog(
             modal=True,
