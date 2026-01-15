@@ -2,7 +2,8 @@ import flet as ft
 import shutil
 import time
 from utils.ui import show_message
-from utils.cryptor import generate_password, decrypt_data
+from utils.cryptor import generate_password, decrypt_data, derive_master_password
+from utils.validator import validate_master_password
 from database.connection import DB_PATH
 from controllers.password import Password
 from controllers.password_type import PasswordType
@@ -86,6 +87,52 @@ class HomeView:
             border_color=ft.Colors.BLUE_400,
             cursor_color=ft.Colors.BLUE_900,
             width=400,
+        )
+
+        account_username_input = ft.TextField(
+            label="Username",
+            prefix_icon=ft.Icons.PERSON,
+            border_color=ft.Colors.BLUE_400,
+            cursor_color=ft.Colors.BLUE_900,
+            width=400,
+        )
+
+        current_master_password_input = ft.TextField(
+            label="Current master password",
+            prefix_icon=ft.Icons.LOCK,
+            password=True,
+            border_color=ft.Colors.BLUE_400,
+            cursor_color=ft.Colors.BLUE_900,
+            width=400,
+        )
+
+        def show_confirm_new_master_password(e: ft.ControlEvent):
+            has_value = bool(e.control.value)
+            confirm_new_master_password_input.visible = has_value
+            if not has_value:
+                confirm_new_master_password_input.value = ""
+                confirm_new_master_password_input.error = None
+            confirm_new_master_password_input.update()
+
+        new_master_password_input = ft.TextField(
+            label="New master password",
+            prefix_icon=ft.Icons.LOCK_RESET,
+            password=True,
+            border_color=ft.Colors.BLUE_400,
+            cursor_color=ft.Colors.BLUE_900,
+            width=400,
+            on_change=show_confirm_new_master_password,
+        )
+
+        confirm_new_master_password_input = ft.TextField(
+            label="Confirm new master password",
+            prefix_icon=ft.Icons.LOCK,
+            password=True,
+            can_reveal_password=True,
+            border_color=ft.Colors.BLUE_400,
+            cursor_color=ft.Colors.BLUE_900,
+            width=400,
+            visible=False,
         )
 
         # Dialogs
@@ -360,7 +407,7 @@ class HomeView:
 
         menu_items = [
             ft.PopupMenuItem(
-                content=ft.Row([ft.Icon(ft.Icons.PERSON, ft.Colors.BLACK), ft.Text("My account"),]),
+                content=ft.Row([ft.Icon(ft.Icons.PERSON, ft.Colors.BLACK), ft.Text("Update account"),]),
                 on_click=lambda e: show_message(self.page, 4, "Coming soon"),
             )
         ]
