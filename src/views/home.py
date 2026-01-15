@@ -3,6 +3,7 @@ import shutil
 from utils.ui import show_message
 from utils.cryptor import generate_password
 from database.connection import DB_PATH
+from controllers.password import Password
 
 
 class HomeView:
@@ -81,6 +82,89 @@ class HomeView:
             border_color=ft.Colors.BLUE_400,
             cursor_color=ft.Colors.BLUE_900,
             width=400,
+        )
+
+        # Dialogs
+        def close_dialog(e):
+            ...       
+        
+        def open_new_password_dialog(e):
+            ...
+
+        def save_new_password(e):
+            ...        
+        
+        new_password_dialog = ft.AlertDialog(
+            modal=True,
+            title=ft.Text("New password"),
+            content=ft.Column(
+                controls=[
+                    service_input,
+                    login_input,
+                    ft.Row(
+                        controls=[password_input, generate_password_button], 
+                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                        spacing=10,
+                    ),
+                    type_dropdown,
+                    url_input,
+                    notes_input
+                ],
+                expand=True,
+                scroll=ft.ScrollMode.AUTO,
+                height=450,
+                alignment=ft.MainAxisAlignment.START,
+                spacing=10
+            ),
+            actions=[
+                ft.TextButton("Cancel", on_click=close_dialog),
+                ft.TextButton("Save", on_click=save_new_password),
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+        )
+
+
+        editing_password: Password | None = None
+        def open_edit_password_dialog(e, password: Password):
+            ...
+        
+        def save_edited_password(e, password: Password):
+            ...
+
+        def confirm_delete_password(e):
+            ...
+
+        def delete_password(e, password: Password):
+            ...
+
+        edit_password_dialog = ft.AlertDialog(
+            modal=True,
+            title=ft.Text("Edit password"),
+            content=ft.Column(
+                controls=[
+                    service_input,
+                    login_input,
+                    ft.Row(
+                        controls=[password_input, generate_password_button], 
+                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                        spacing=10,
+                    ),
+                    type_dropdown,
+                    url_input,
+                    notes_input
+                ],
+                expand=True,
+                scroll=ft.ScrollMode.AUTO,
+                height=450,
+                alignment=ft.MainAxisAlignment.START,
+                spacing=10
+            ),
+            actions=[
+                ft.TextButton("Delete", on_click=lambda e: delete_password(e, editing_password)),
+                ft.TextButton("Cancel", on_click=close_dialog),
+                ft.TextButton("Save", on_click=lambda e: save_edited_password(e, editing_password)),
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
         )
 
         # Page components
