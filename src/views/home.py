@@ -5,6 +5,7 @@ from utils.ui import show_message
 from utils.cryptor import generate_password, decrypt_data
 from database.connection import DB_PATH
 from controllers.password import Password
+from controllers.password_type import PasswordType
 
 
 class HomeView:
@@ -12,8 +13,8 @@ class HomeView:
         self.page = page
         self.user = user
         self.user_key = user_key
-        self.passwords = list()
-        self.password_types = list()
+        self.user_passwords = list()
+        self.password_types = PasswordType.get_all()
         self.on_logout = on_logout
 
     def show_home(self):
