@@ -1,5 +1,6 @@
 import flet as ft
 import shutil
+import time
 from utils.ui import show_message
 from utils.cryptor import generate_password
 from database.connection import DB_PATH
@@ -180,7 +181,7 @@ class HomeView:
         if self.user.is_admin:
             async def export_database(e):
                 file_picker = ft.FilePicker()
-                path = await file_picker.save_file(file_name='db.sqlite3', file_type=ft.FilePickerFileType.CUSTOM, allowed_extensions=['sqlite3'])
+                path = await file_picker.save_file(file_name=f"{time.strftime(r'%d_%m_%Y-%H_%M')}.sqlite3", file_type=ft.FilePickerFileType.CUSTOM, allowed_extensions=['sqlite3'])
                 
                 if path:
                     try:
