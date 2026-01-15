@@ -30,7 +30,7 @@ class HomeView:
                 self.page.pop_dialog()
                 self.on_logout(e)
             except Exception:
-                self.show_message(3, "Error importing database! Please try again later.")
+                show_message(self.page, 3, "Error importing database! Please try again later.")
 
         async def import_database(e):
             file = await ft.FilePicker().pick_files(file_type=ft.FilePickerFileType.CUSTOM, allowed_extensions=["sqlite3"], allow_multiple=False)
