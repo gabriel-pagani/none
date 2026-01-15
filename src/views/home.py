@@ -1,6 +1,7 @@
 import flet as ft
 import shutil
 from utils.ui import show_message
+from utils.cryptor import generate_password
 from database.connection import DB_PATH
 
 
@@ -12,7 +13,77 @@ class HomeView:
         self.on_logout = on_logout
 
     def show_home(self):
-        # Components
+        # Dialogs components
+        service_input = ft.TextField(
+            label="Service", 
+            prefix_icon=ft.Icons.PUBLIC,
+            border_color=ft.Colors.BLUE_400,
+            cursor_color=ft.Colors.BLUE_900,
+            width=400,
+        )
+        
+        login_input = ft.TextField(
+            label="Login/Username", 
+            prefix_icon=ft.Icons.PERSON,
+            border_color=ft.Colors.BLUE_400,
+            cursor_color=ft.Colors.BLUE_900,
+            width=400,
+        )
+        
+        password_input = ft.TextField(
+            label="Password", 
+            password=True, 
+            can_reveal_password=True, 
+            prefix_icon=ft.Icons.KEY,
+            border_color=ft.Colors.BLUE_400,
+            cursor_color=ft.Colors.BLUE_900,
+            width=350,
+        )
+
+        def generate_random_password(e):
+            password_input.value = generate_password()
+            password_input.update()
+
+        generate_password_button = ft.IconButton(
+            icon=ft.Icons.AUTO_AWESOME,
+            tooltip="Generate random password",
+            on_click=generate_random_password
+        )
+
+        type_dropdown = ft.Dropdown(
+            label="Type",
+            border_color=ft.Colors.BLUE_400,
+            focused_border_color=ft.Colors.BLUE_900,
+            width=400,
+            options=[
+                *(ft.dropdown.Option(key=str(t.id), text=t.name) for t in self.password_types),
+                ft.dropdown.Option(key="", text="Others"),
+            ],
+            key="",
+            text="Others",
+            leading_icon=ft.Icons.CATEGORY,
+        )
+
+        url_input = ft.TextField(
+            label="URL", 
+            prefix_icon=ft.Icons.LINK,
+            border_color=ft.Colors.BLUE_400,
+            cursor_color=ft.Colors.BLUE_900,
+            width=400,
+        )
+        
+        notes_input = ft.TextField(
+            label="Notes", 
+            multiline=True, 
+            min_lines=3,
+            max_lines=3,
+            prefix_icon=ft.Icons.CREATE,
+            border_color=ft.Colors.BLUE_400,
+            cursor_color=ft.Colors.BLUE_900,
+            width=400,
+        )
+
+        # Page components
         menu_items = [
             ft.PopupMenuItem(
                 content=ft.Row([ft.Icon(ft.Icons.PERSON, ft.Colors.BLACK), ft.Text("My account"),]),
