@@ -74,7 +74,7 @@ class HomeView:
             label="Type",
             border_color=ft.Colors.BLUE_400,
             focused_border_color=ft.Colors.BLUE_900,
-            width=400,
+            width=350,
             options=[
                 *(ft.dropdown.Option(key=str(t.id), text=t.name) for t in self.password_types),
                 ft.dropdown.Option(key="", text="Others"),
@@ -82,6 +82,12 @@ class HomeView:
             key="",
             text="Others",
             leading_icon=ft.Icons.CATEGORY,
+        )
+
+        manage_password_types_button = ft.IconButton(
+            icon=ft.Icons.BUILD,
+            tooltip="Manage password types",
+            on_click=...
         )
 
         url_input = ft.TextField(
@@ -221,7 +227,11 @@ class HomeView:
                         vertical_alignment=ft.CrossAxisAlignment.CENTER,
                         spacing=10,
                     ),
-                    type_dropdown,
+                    ft.Row(
+                        controls=[type_dropdown, manage_password_types_button], 
+                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                        spacing=10,
+                    ),
                     url_input,
                     notes_input
                 ],
@@ -337,7 +347,11 @@ class HomeView:
                         vertical_alignment=ft.CrossAxisAlignment.CENTER,
                         spacing=10,
                     ),
-                    type_dropdown,
+                    ft.Row(
+                        controls=[type_dropdown, manage_password_types_button], 
+                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                        spacing=10,
+                    ),
                     url_input,
                     notes_input
                 ],
