@@ -74,7 +74,7 @@ class HomeView:
             label="Type",
             border_color=ft.Colors.BLUE_400,
             focused_border_color=ft.Colors.BLUE_900,
-            width=350,
+            width=300,
             options=[
                 *(ft.dropdown.Option(key=str(t.id), text=t.name) for t in self.password_types),
                 ft.dropdown.Option(key="", text="Others"),
@@ -84,10 +84,16 @@ class HomeView:
             leading_icon=ft.Icons.CATEGORY,
         )
 
-        manage_password_types_button = ft.IconButton(
-            icon=ft.Icons.BUILD,
-            tooltip="Manage password types",
-            on_click=...
+        create_password_type_button = ft.IconButton(
+            icon=ft.Icons.ADD,
+            tooltip="Create new password type",
+            on_click=...,
+        )
+
+        delete_password_type_button = ft.IconButton(
+            icon=ft.Icons.DELETE,
+            tooltip="Delete password type",
+            on_click=...,
         )
 
         url_input = ft.TextField(
@@ -228,7 +234,7 @@ class HomeView:
                         spacing=10,
                     ),
                     ft.Row(
-                        controls=[type_dropdown, manage_password_types_button], 
+                        controls=[type_dropdown, create_password_type_button, delete_password_type_button],
                         vertical_alignment=ft.CrossAxisAlignment.CENTER,
                         spacing=10,
                     ),
@@ -260,7 +266,7 @@ class HomeView:
             service_input.value = decrypted_data.get("service")
             login_input.value = decrypted_data.get("login")
             password_input.value = decrypted_data.get("password")
-            type_dropdown.value = decrypted_data.get("type_id") if decrypted_data.get("type_id") else ""
+            type_dropdown.value = str(decrypted_data.get("type_id")) if decrypted_data.get("type_id") else ""
             url_input.value = decrypted_data.get("url")
             notes_input.value = decrypted_data.get("notes")
             
@@ -348,7 +354,7 @@ class HomeView:
                         spacing=10,
                     ),
                     ft.Row(
-                        controls=[type_dropdown, manage_password_types_button], 
+                        controls=[type_dropdown, create_password_type_button, delete_password_type_button],
                         vertical_alignment=ft.CrossAxisAlignment.CENTER,
                         spacing=10,
                     ),
