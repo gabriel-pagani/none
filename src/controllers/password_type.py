@@ -16,7 +16,7 @@ class PasswordType:
         try:
             response = execute_query(
                 "INSERT INTO password_types (name) VALUES (?) RETURNING *",
-                (name,)
+                (name.strip(),)
             )
 
             if response != []:
@@ -76,10 +76,10 @@ class PasswordType:
 
             execute_query(
                 f"UPDATE password_types SET name = ? WHERE id = ?", 
-                (name, self.id)
+                (name.strip(), self.id)
             )
             
-            self.name = name if name else self.name
+            self.name = name.strip() if name else self.name
 
             return True
 
