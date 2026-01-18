@@ -2,7 +2,7 @@ import flet as ft
 import shutil
 import time
 from utils.ui import show_message
-from utils.cryptor import generate_password, decrypt_data, derive_master_password
+from utils.cryptor import generate_password, decrypt_data
 from utils.validator import validate_master_password
 from database.connection import DB_PATH
 from controllers.password import Password
