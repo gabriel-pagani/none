@@ -1,4 +1,5 @@
 import flet as ft
+import os
 from views.auth import AuthView
 from views.home import HomeView
 
@@ -14,7 +15,7 @@ class Main:
             await self.page.window.center()
         
         self.page.title = 'Kryptex'
-        self.page.window.icon = r'favicon.png'
+        self.page.window.icon = os.path.join(os.path.dirname(__file__), "assets", "favicon.png")
         self.page.run_task(center_window)
         self.page.theme_mode = ft.ThemeMode.LIGHT
         self.page.bgcolor = ft.Colors.WHITE
